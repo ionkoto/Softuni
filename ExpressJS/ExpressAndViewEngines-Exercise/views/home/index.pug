@@ -1,0 +1,24 @@
+extends ../layout.pug
+
+block content
+    h1.head-title Welcome to MyMovies Website!
+    form#search-form
+        h2.search-title='Filter movies by genre'
+        input.search-form(type='text', name='query', placeholder='Search...')
+        input.search-form(type='submit', value='Search')
+    .cards
+        each movie in movies
+            .movie-card
+                img.movie-img(src=`${movie.image}`, width = "200px")
+                h2=movie.name
+                h3='Summary:'
+                p.movie-attributes=movie.summary
+                h3='Director:'
+                p.movie-attributes=movie.director
+
+                a.btn.btn-small.btn-warning(href=`/movie/edit/${movie._id}`)= 'Edit'
+                a.btn.btn-small.btn-danger(href=`/movie/delete/${movie._id}`)= 'Delete'
+                a.btn.btn-small.btn-primary(href=`/genre/${movie.genre.name}/movies`)=`More ${movie.genre.name} movies`
+
+
+

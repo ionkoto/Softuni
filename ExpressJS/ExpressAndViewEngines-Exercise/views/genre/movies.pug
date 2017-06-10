@@ -1,0 +1,15 @@
+extends ../layout.pug
+
+block content
+
+    h2=`All ${genre.name} movies`
+    .cards
+    each movie in genre.movies
+        .movie-card
+            img.movie-img(src=`${movie.image}`, width='200px')
+            h2=movie.name
+            p=movie.summary
+            p=movie.director
+
+            a.btn.btn-small.btn-warning(href=`/movie/edit/${movie._id}`)= 'Edit'
+            a.btn.btn-small.btn-danger(href=`/movie/delete/${movie._id}`)= 'Delete'

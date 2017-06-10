@@ -1,0 +1,29 @@
+extends ../layout.pug
+
+block content
+    form.form.center-form(method='post', enctype='multipart/form-data')
+        h2 Edit Movie
+        .form-group
+            label(for='name') Name
+            input#name.input-field(name='name', type='text', value=movie.name )
+        .form-group
+            label(for='summary') Summary
+            textarea#summary.input-field(name='summary', type='text')= movie.summary
+
+        .form-group
+            label(for='director') Director
+            input#director.input-field(name='director', type='text', value=movie.director)
+        .form-group
+            label(for='image') Image
+            input#image.input-field(name='image', type='file', accept='.jpg,.jpeg,.png')
+        .form-group
+            label(for='genre') Genre
+            select#genre.input-field(name='genre')
+                each genre in genres
+                    if (genre._id.equals(movie.genre))
+                        option(value=`${genre._id}` selected)=genre.name
+                    else
+                        option(value=`${genre._id}`)=genre.name
+
+        .form-group
+            input.form-btn.btn.btn-warning(type='submit', value='Edit')

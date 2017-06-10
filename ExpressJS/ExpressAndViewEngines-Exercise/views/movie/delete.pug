@@ -1,0 +1,20 @@
+extends ../layout.pug
+
+block content
+    form.form.center-form(method='post', enctype='multipart/form-data')
+        h2 Delete Movie
+        .form-group
+            label
+            .movie-card
+                img.movie-img(src=`${movie.image}`)
+        .form-group
+            label(for='name') Name
+            input#name.input-field(name='name', type='text', value=movie.name disabled )
+        .form-group
+            label(for='summary') Summary
+            textarea#summary.input-field(name='summary', type='text' disabled )= movie.summary
+        .form-group
+            label(for='director') Director
+            textarea#director.input-field(name='director', type='text' disabled )= movie.director
+        .form-group
+            input.form-btn.btn.btn-danger(type='submit', value='Delete')
