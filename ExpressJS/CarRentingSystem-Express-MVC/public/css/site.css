@@ -4,6 +4,9 @@ h1 {
 .container {
   padding-left: 25%
 }
+.container ul {
+  display: inline-block;
+}
 .menu {
   list-style-type: none;
   padding-left: 0;
@@ -14,3 +17,32 @@ h1 {
 .menu li:after {
   content: "\00a0";
 }
+.menu a {
+  margin: 10px;
+}
+.user-profile-form{
+  list-style-type: none;
+  float: right;
+  margin-right: 20%;
+}
+.user-profile-form li {
+  display: inline-block
+}
+.user-profile-form a{
+  padding: 10px;
+}
+.car-card{
+  width: 50%;
+}
+.car-card img {
+  width: 100%;
+}
+.inline-button{
+  display: inline-block;
+  float:right;
+}
+table, th, td {
+    border: 1px solid black;
+    text-align: center;
+}
+

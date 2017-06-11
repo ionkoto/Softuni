@@ -6,7 +6,7 @@ module.exports = {
   development: {
     rootPath: rootPath,
     db: 'mongodb://localhost:27017/CarRentingSystem',
-    port: 1338
+    port: 1337
   },
   staging: {
   },
