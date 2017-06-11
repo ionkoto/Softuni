@@ -1,0 +1,28 @@
+<form action="/article/list" method="GET">
+    <input type="text" name="search">
+    <input type="submit" value="Search">
+</form>
+
+<ul class="articles">
+    {{#each articles}}
+        <li class="article">
+            <h2>{{title}}</h2>
+            <img src="{{image}}" width="300px"/>
+            <div>{{{content}}}</div>
+            <br>
+            <a href="/article/details/{{_id}}">Details</a>
+        </li>
+    {{else}}
+        <h2>No articles available!</h2>
+    {{/each}}
+</ul>
+
+<div class="font-3x">
+    {{#if hasPrevPage}}
+        <a href="/article/list?page={{prevPage}}&search={{search}}">&lt;&lt;</a>
+        &nbsp;    &nbsp;    &nbsp;
+    {{/if}}
+    {{#if hasNextPage}}
+        <a href="/article/list?page={{nextPage}}&search={{search}}">&gt;&gt;</a>
+    {{/if}}
+</div>

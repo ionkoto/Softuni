@@ -1,0 +1,23 @@
+<form action="/article/delete/{{article._id}}" method="POST" enctype='multipart/form-data' class="center-form">
+    <div class="form-group">
+        <label for="image">Image</label>
+        <img id="image" src="{{article.image}}" alt="article-poster" width="200px"/>
+        <br>
+        <br>
+    </div>
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input class="input-field" id="title" type="text" name="title" value="{{article.title}}" disabled/>
+        <br>
+        <br>
+    </div>
+    <div class="form-group">
+        <label for="content">Content</label>
+        <textarea class="input-field" id="content" name="content" rows="20" disabled>{{article.content}}</textarea>
+        <br>
+        <br>
+    </div>
+    <div class="form-group">
+        <input class="form-btn btn" type="submit" value="Delete" />
+    </div>
+</form>

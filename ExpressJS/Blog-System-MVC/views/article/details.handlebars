@@ -1,0 +1,15 @@
+<div class="article-details">
+    <h1>{{article.title}}</h1>
+    <img src="{{article.image}}" alt="article-poster" width="200px"/>
+    <div class="article-content">
+        {{{article.content}}}
+    </div>
+    <p>{{author.username}}</p>
+    <p>{{date}}</p>
+    {{#if canEdit}}
+        <a href="/article/edit/{{article._id}}">Edit</a>
+    {{/if}}
+    {{#if isAdmin}}
+        <a href="/article/delete/{{article._id}}">Delete</a>
+    {{/if}}
+</div>

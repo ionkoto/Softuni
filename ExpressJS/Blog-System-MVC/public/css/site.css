@@ -1,0 +1,75 @@
+h1 {
+  color: #717171
+}
+.container {
+  padding-left: 25%
+}
+.menu {
+  padding: 10px 40px
+}
+.menu ul {
+  padding-left: 0
+}
+.menu li {
+  display: inline-block;
+  padding: 10px
+}
+.menu li:first-of-type {
+  padding-left: 0
+}
+.menu li a {
+  text-decoration-line: none
+}
+.center-form {
+  margin: 0 auto
+}
+.form-group label {
+  font-size: 1.2em;
+  width: 30%;
+  display: inline-block;
+  text-align: end;
+  padding-right: 10px;
+  vertical-align: top
+}
+.input-field {
+   width: 50%;
+   box-sizing: border-box;
+   padding: 10px;
+   border-radius: 10px;
+   border: 2px solid #d3d3d3;
+   font-size: inherit
+ }
+#login-form .input-field, #register-form .input-field {
+  width: 20%;
+  box-sizing: border-box;
+  padding: 10px;
+  border-radius: 10px;
+  border: 2px solid #d3d3d3;
+  font-size: inherit
+}
+textarea.input-field {
+  padding: 10px;
+  font-family: inherit
+}
+.input-field:focus {
+  outline: 0
+}
+.form-group {
+  padding: 10px
+}
+.btn {
+  padding: 10px;
+  border: 1px solid #d3d3d3;
+  border-radius: 5px;
+  color: inherit;
+  display: inline-block;
+  text-decoration-line: none;
+  margin: 5px
+}
+.btn:hover {
+  cursor: pointer
+}
+.font-3x {
+  font-size: 3em;
+}
+
