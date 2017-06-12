@@ -1,0 +1,15 @@
+<h1>Currently registered Forum administrators: </h1>
+<table>
+    <tr>
+        <th>Username</th>
+        <th>First name</th>
+        <th>Last name</th>
+    </tr>
+    {{#each admins}}
+        <tr>
+            <td>{{username}}</td>
+            <td>{{firstName}}</td>
+            <td>{{lastName}}</td>
+        </tr>
+    {{/each}}
+</table>
