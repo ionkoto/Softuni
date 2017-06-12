@@ -81,12 +81,9 @@ module.exports = {
         })
           .then((renting) => {
             car.isRented = true
-            setInterval(() => {
-              let hour = new Date().getHours()
-              if (hour >= 9 && hour < 18) {
-                checkForReturnedCars()
-              }
-            }, 1000 * 60)
+            setTimeout(() => {
+              car.isRented = false
+            }, renting.days * 24 * 3600 * 1000)
             car
               .save()
               .then(car => res.redirect('/users/me'))
@@ -142,6 +139,14 @@ module.exports = {
   }
 }
 
-function checkForReturnedCars () {
-  
+function checkIfCarReturned (car, renting) {
+  let currDate = Date.now()
+  let date = new Date()
+  date.setDate(renting.rentedOn.getDate() + renting.days)
+  if (currDate > date) {
+    car.isRented = false
+    car.save()
+    return true
+  }
+  return false
 }

@@ -1,0 +1,27 @@
+<div class="single-post">
+    <h4>Author: <a href="/profile/{{thread.author.username}}">{{thread.author.username}}</a>  &nbsp;&nbsp;&nbsp; Added on: {{thread.postedOn}}</h4>
+    <h2>{{thread.title}}</h2>
+    <p>{{thread.description}}</p>
+</div>
+<h1>Answers:</h1>
+{{#each comments}}
+    <div class="comment-container">
+        <h4>Author: <a href="/profile/{{author.username}}">{{author.username}}</a>  &nbsp;&nbsp;&nbsp; Added on: {{postedOn}}</h4>
+        <p>{{this.content}}</p>
+    </div>
+{{/each}}
+
+{{#if currentUser}}
+    <div class="form-container">
+        <form class="add-comment-form" action="/post/{{thread._id}}/{{thread.title}}" method="POST">
+             <label for="comment">Comment</label>
+             <textarea id="comment" name="content" placeholder="Your comment...">{{comment.content}}</textarea>
+
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+{{else}}
+<h2 class="centered">Login to add comments.</h2>
+{{/if}}
+
+

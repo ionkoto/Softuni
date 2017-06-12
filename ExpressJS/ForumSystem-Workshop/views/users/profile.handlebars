@@ -1,0 +1,18 @@
+<h1>List of user's posts:</h1>
+{{#each threads}}
+    <div class="single-post">
+        <h2>{{title}}</h2>
+        <p>{{description}}</p>
+    </div>
+{{else}}
+    <h2 class="centered">This user hasn't posted any threads.</h2>
+{{/each}}
+<h1>List of user's comments:</h1>
+{{#each comments}}
+    <div class="comment-container">
+        <h4>Author: {{author.username}} &nbsp;&nbsp;&nbsp; Added on: {{postedOn}}</h4>
+        <p>{{this.content}}</p>
+    </div>
+{{else}}
+    <h2 class="centered">This user hasn't posted any comments yet.</h2>
+{{/each}}
