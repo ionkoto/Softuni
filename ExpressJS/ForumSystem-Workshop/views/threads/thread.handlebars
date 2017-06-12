@@ -1,14 +1,28 @@
-<div class="single-post">
-    <h4>Author: <a href="/profile/{{thread.author.username}}">{{thread.author.username}}</a>  &nbsp;&nbsp;&nbsp; Added on: {{thread.postedOn}}</h4>
-    <h2>{{thread.title}}</h2>
-    <p>{{thread.description}}</p>
+<div class="post-container">
+    <div class="single-post">
+        <h4>Author: <a href="/profile/{{thread.author.username}}">{{thread.author.username}}</a>  &nbsp;&nbsp;&nbsp; Added on: {{thread.postedOn}}</h4>
+        <h2>{{thread.title}}</h2>
+        <p>{{thread.description}}</p>
+    </div>
+    {{#if isAdmin}}
+        <div class="post-action-buttons">
+            <a href="/post/{{thread._id}}/{{thread.title}}/edit" class="button edit">Edit</a>
+            <a href="/post/{{thread._id}}/{{thread.title}}/delete" class="button delete">Delete</a>
+        </div>
+    {{/if}}
 </div>
+
 <h1>Answers:</h1>
 {{#each comments}}
     <div class="comment-container">
         <h4>Author: <a href="/profile/{{author.username}}">{{author.username}}</a>  &nbsp;&nbsp;&nbsp; Added on: {{postedOn}}</h4>
         <p>{{this.content}}</p>
     </div>
+    {{#if ../isAdmin}}
+        <div class="post-action-buttons">
+            <a href="/post/{{thread._id}}/{{thread.title}}/comment/{{_id}}/edit" class="button edit">Edit</a>
+            <a href="/post/{{thread._id}}/{{thread.title}}/comment/{{_id}}/delete" class="button delete">Delete</a>        </div>
+    {{/if}}
 {{/each}}
 
 {{#if currentUser}}
@@ -23,5 +37,6 @@
 {{else}}
 <h2 class="centered">Login to add comments.</h2>
 {{/if}}
+
 
 

@@ -40,5 +40,56 @@ module.exports = {
         res.locals.globalError = message
         res.redirect('/')
       })
+  },
+  editGet: (req, res) => {
+    let threadId = req.params.id
+    let commentId = req.params.commentId
+    Thread
+      .findById(threadId)
+      .then((thread) => {
+        Comment
+          .findById(commentId)
+          .then((comment) => {
+            res.render('comments/edit', { thread: thread, comment: comment })
+          })
+      })
+  },
+  editPost: (req, res) => {
+    let commentObj = req.body
+    let commentId = req.params.commentId
+    let threadId = req.params.id
+    let threadTitle = req.params.title
+
+    Comment
+      .findByIdAndUpdate(commentId, {
+        content: commentObj.content
+      })
+      .then((comment) => {
+        res.redirect(`/post/${threadId}/${threadTitle}`)
+      })
+  },
+  deleteGet: (req, res) => {
+    let threadId = req.params.id
+    let commentId = req.params.commentId
+    Thread
+      .findById(threadId)
+      .then((thread) => {
+        Comment
+          .findById(commentId)
+          .then((comment) => {
+            res.render('comments/delete', { thread: thread, comment: comment })
+          })
+      })
+  },
+  deletePost: (req, res) => {
+    let commentId = req.params.commentId
+    let threadId = req.params.id
+    let threadTitle = req.params.title
+
+    Comment
+      .findByIdAndRemove(commentId)
+      .then(() => {
+        res.redirect(`/post/${threadId}/${threadTitle}`)
+      })
   }
 }

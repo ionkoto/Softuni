@@ -1,0 +1,12 @@
+<div class="form-container">
+    <form class="add-thread-form" action="/post/{{thread._id}}/{{thread.title}}/delete" method="POST">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" placeholder="Post title" value="{{thread.title}}" disabled>
+
+        <label for="description">Description</label>
+        <textarea id="description" name="description" placeholder="Post content..." disabled>{{thread.description}}</textarea>
+
+        <input type="submit" value="Delete" class="delete">
+    </form>
+</div>
+

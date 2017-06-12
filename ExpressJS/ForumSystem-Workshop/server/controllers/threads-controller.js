@@ -49,6 +49,7 @@ module.exports = {
           .find({ thread: threadId })
           .sort('-postedOn')
           .populate('author')
+          .populate('thread')
           .then((comments) => {
             res.render('threads/thread', { thread: thread, comments: comments })
           })
@@ -57,6 +58,48 @@ module.exports = {
         let message = errorHandler.handleMongooseError(err)
         res.locals.globalError = message
         res.render('/')
+      })
+  },
+  editGet: (req, res) => {
+    let threadId = req.params.id
+    Thread
+      .findById(threadId)
+      .then((thread) => {
+        res.render('threads/edit', { thread: thread })
+      })
+  },
+  editPost: (req, res) => {
+    let threadObj = req.body
+    let threadId = req.params.id
+
+    Thread
+      .findByIdAndUpdate(threadId, {
+        title: threadObj.title,
+        description: threadObj.description
+      })
+      .then((thread) => {
+        res.redirect(`/post/${thread._id}/${thread.title}`)
+      })
+  },
+  deleteGet: (req, res) => {
+    let threadId = req.params.id
+    Thread
+      .findById(threadId)
+      .then((thread) => {
+        res.render('threads/delete', { thread: thread })
+      })
+  },
+  deletePost: (req, res) => {
+    let threadId = req.params.id
+
+    Thread
+      .findByIdAndRemove(threadId)
+      .then((thread) => {
+        Comment
+          .remove({ thread: thread._id })
+          .then(() => {
+            res.redirect(`/list`)
+          })
       })
   }
 }

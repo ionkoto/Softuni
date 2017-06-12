@@ -1,0 +1,10 @@
+<div class="form-container">
+    <form class="add-thread-form" action="/post/{{thread._id}}/{{thread.title}}/comment/{{comment._id}}/edit" method="POST">
+
+        <label for="content">Content</label>
+        <textarea id="content" name="content" placeholder="Answer content...">{{comment.content}}</textarea>
+
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
