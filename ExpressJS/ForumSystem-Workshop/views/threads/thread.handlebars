@@ -9,11 +9,11 @@
     {{#if notBlocked}}
         <div class="post-action-buttons">
             {{#if hasLiked}}
-                <form id="like-form" action="/post/{{thread._id}}/{{thread.title}}/like" method="POST">
+                <form id="like-form" action="/post/{{thread._id}}/{{thread.title}}" method="POST">
                     <input type="submit" value="Dislike" name="submit"/>
                 </form>
             {{else}}
-                <form id="like-form" action="/post/{{thread._id}}/{{thread.title}}/like" method="POST">
+                <form id="like-form" action="/post/{{thread._id}}/{{thread.title}}" method="POST">
                     <input type="submit" value="Like" name="submit"/>
                 </form>
             {{/if}}
@@ -40,7 +40,7 @@
 
 {{#if notBlocked}}
     <div class="form-container">
-        <form class="add-comment-form" action="/post/{{thread._id}}/{{thread.title}}" method="POST">
+        <form class="add-comment-form" action="/post/{{thread._id}}/{{thread.title}}/comment" method="POST">
              <label for="comment">Comment</label>
              <textarea id="comment" name="content" placeholder="Your comment...">{{comment.content}}</textarea>
 
