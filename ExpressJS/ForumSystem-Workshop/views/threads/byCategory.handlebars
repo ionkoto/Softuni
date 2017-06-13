@@ -1,0 +1,10 @@
+{{#each threads}}
+    <div class="single-post">
+        <h2>{{this.title}}</h2>
+        <p>{{this.description}}</p>
+        <a href="/post/{{this._id}}/{{this.title}}">Read Post</a>
+        <p>Views: {{this.views}}</p>
+    </div>
+{{else}}
+    <h2 class="centered">No posts available!</h2>
+{{/each}}

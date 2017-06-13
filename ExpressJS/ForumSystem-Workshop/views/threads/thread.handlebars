@@ -6,7 +6,7 @@
         <p>Seen: {{thread.views}} times</p>
         <p>Likes: {{thread.likes}}</p>
     </div>
-    {{#if currentUser}}
+    {{#if notBlocked}}
         <div class="post-action-buttons">
             {{#if hasLiked}}
                 <form id="like-form" action="/post/{{thread._id}}/{{thread.title}}/like" method="POST">
@@ -38,7 +38,7 @@
     {{/if}}
 {{/each}}
 
-{{#if currentUser}}
+{{#if notBlocked}}
     <div class="form-container">
         <form class="add-comment-form" action="/post/{{thread._id}}/{{thread.title}}" method="POST">
              <label for="comment">Comment</label>

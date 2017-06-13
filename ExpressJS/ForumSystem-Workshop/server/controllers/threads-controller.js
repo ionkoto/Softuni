@@ -34,7 +34,7 @@ module.exports = {
       })
   },
   list: (req, res) => {
-    let pageSize = 1
+    let pageSize = 20
     let page = parseInt(req.query.page) || 1
     let threadsToShow = 0
     Thread
@@ -198,5 +198,17 @@ module.exports = {
       res.locals.globalError = message
       res.render('/')
     })
+  },
+  getByCategory: (req, res) => {
+    let categoryName = req.params.name
+    Category
+      .findOne({ name: categoryName })
+      .then((category) => {
+        Thread
+          .find({ category: category._id })
+          .then((threads) => {
+            res.render('threads/byCategory', {threads: threads})
+          })
+      })
   }
 }

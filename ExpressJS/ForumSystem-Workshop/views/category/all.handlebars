@@ -1,6 +1,7 @@
 <h2 class="centered">Categories: </h2>
 {{#each categories}}
     <h3 class="centered">{{name}}</h3>
+    <div class="centered"><a href="/list/{{name}}">List posts</a></div>
     {{#if ../isAdmin}}
         <form id="delete-form" action="/categories/{{_id}}/delete" method="POST" class="centered">
             <input type="submit" value="Delete" name="delete" class="delete"/>
