@@ -1,10 +1,16 @@
 const Thread = require('../data/Thread')
 const Comment = require('../data/Comment')
+const Category = require('../data/Category')
+const User = require('../data/User')
 const errorHandler = require('../utilities/error-handler')
 
 module.exports = {
   addGet: (req, res) => {
-    res.render('threads/add')
+    Category
+      .find({})
+      .then((categories) => {
+        res.render('threads/add', { categories: categories })
+      })
   },
 
   addPost: (req, res) => {
@@ -15,7 +21,8 @@ module.exports = {
       .create({
         title: threadObj.title,
         description: threadObj.description,
-        author: userId
+        author: userId,
+        category: threadObj.category
       })
       .then((thread) => {
         res.redirect('/')
@@ -27,11 +34,27 @@ module.exports = {
       })
   },
   list: (req, res) => {
+    let pageSize = 1
+    let page = parseInt(req.query.page) || 1
+    let threadsToShow = 0
     Thread
       .find({})
-      .sort('-lastAnswer')
-      .then((threads) => {
-        res.render('threads/list', { threads: threads })
+      .then((allThreads) => {
+        threadsToShow = allThreads.length
+        Thread
+          .find({})
+          .sort('-lastAnswer')
+          .skip((page - 1) * pageSize)
+          .limit(pageSize)
+          .then((threads) => {
+            res.render('threads/list', {
+              threads: threads,
+              hasPrevPage: page > 1,
+              hasNextPage: threadsToShow > page * pageSize,
+              prevPage: page - 1,
+              nextPage: page + 1
+            })
+          })
       })
       .catch(err => {
         let message = errorHandler.handleMongooseError(err)
@@ -45,13 +68,36 @@ module.exports = {
       .findById(threadId)
       .populate('author')
       .then((thread) => {
-        Comment
-          .find({ thread: threadId })
-          .sort('-postedOn')
-          .populate('author')
-          .populate('thread')
-          .then((comments) => {
-            res.render('threads/thread', { thread: thread, comments: comments })
+        thread.views += 1
+        thread
+          .save()
+          .then((thread) => {
+            Comment
+              .find({ thread: threadId })
+              .sort('-postedOn')
+              .populate('author')
+              .populate('thread')
+              .then((comments) => {
+                if (req.user) {
+                  let userId = req.user.id
+                  User
+                    .findById(userId)
+                    .then((user) => {
+                      if (user.threadsLiked.indexOf(threadId) > -1) {
+                        res.render('threads/thread', { thread: thread, comments: comments, hasLiked: true })
+                      } else if (user.threadsLiked.indexOf(threadId) < 0) {
+                        res.render('threads/thread', { thread: thread, comments: comments, hasLiked: false })
+                      }
+                    })
+                    .catch(err => {
+                      let message = errorHandler.handleMongooseError(err)
+                      res.locals.globalError = message
+                      res.render('/')
+                    })
+                } else {
+                  res.render('threads/thread', { thread: thread, comments: comments })
+                }
+              })
           })
       })
       .catch(err => {
@@ -101,5 +147,56 @@ module.exports = {
             res.redirect(`/list`)
           })
       })
+  },
+  like: (req, res) => {
+    let threadId = req.params.id
+    let userId = req.user.id
+
+    Thread
+    .findById(threadId)
+    .populate('author')
+    .then((thread) => {
+      Comment
+      .find({ thread: threadId })
+      .sort('-postedOn')
+      .populate('author')
+      .populate('thread')
+      .then((comments) => {
+        User
+          .findById(userId)
+          .then((user) => {
+            if (req.body.submit === 'Like') {
+              user.threadsLiked.push(threadId)
+              user
+                .save()
+                .then(() => {
+                  thread.likes += 1
+                  thread
+                    .save()
+                    .then(() => {
+                      res.render('threads/thread', { thread: thread, comments: comments, hasLiked: true })
+                    })
+                })
+            } else if (req.body.submit === 'Dislike') {
+              user.threadsLiked.splice(user.threadsLiked.indexOf(threadId), 1)
+              user
+                .save()
+                .then(() => {
+                  thread.likes -= 1
+                  thread
+                    .save()
+                    .then(() => {
+                      res.render('threads/thread', { thread: thread, comments: comments, hasLiked: false })
+                    })
+                })
+            }
+          })
+      })
+    })
+    .catch(err => {
+      let message = errorHandler.handleMongooseError(err)
+      res.locals.globalError = message
+      res.render('/')
+    })
   }
 }

@@ -3,11 +3,24 @@
         <h4>Author: <a href="/profile/{{thread.author.username}}">{{thread.author.username}}</a>  &nbsp;&nbsp;&nbsp; Added on: {{thread.postedOn}}</h4>
         <h2>{{thread.title}}</h2>
         <p>{{thread.description}}</p>
+        <p>Seen: {{thread.views}} times</p>
+        <p>Likes: {{thread.likes}}</p>
     </div>
-    {{#if isAdmin}}
+    {{#if currentUser}}
         <div class="post-action-buttons">
+            {{#if hasLiked}}
+                <form id="like-form" action="/post/{{thread._id}}/{{thread.title}}/like" method="POST">
+                    <input type="submit" value="Dislike" name="submit"/>
+                </form>
+            {{else}}
+                <form id="like-form" action="/post/{{thread._id}}/{{thread.title}}/like" method="POST">
+                    <input type="submit" value="Like" name="submit"/>
+                </form>
+            {{/if}}
+            {{#if isAdmin}}
             <a href="/post/{{thread._id}}/{{thread.title}}/edit" class="button edit">Edit</a>
             <a href="/post/{{thread._id}}/{{thread.title}}/delete" class="button delete">Delete</a>
+            {{/if}}
         </div>
     {{/if}}
 </div>

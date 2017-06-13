@@ -1,0 +1,12 @@
+<h2 class="centered">Categories: </h2>
+{{#each categories}}
+    <h3 class="centered">{{name}}</h3>
+    {{#if ../isAdmin}}
+        <form id="delete-form" action="/categories/{{_id}}/delete" method="POST" class="centered">
+            <input type="submit" value="Delete" name="delete" class="delete"/>
+        </form>
+    {{/if}}
+
+{{else}}
+    <h2 class="centered">No categories available!</h2>
+{{/each}}
