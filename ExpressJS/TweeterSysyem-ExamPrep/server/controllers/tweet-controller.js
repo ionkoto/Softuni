@@ -10,6 +10,7 @@ module.exports = {
   addPost: (req, res) => {
     let tweetObj = req.body
     let userId = req.user.id
+    let username = req.user.username
 
     if (tweetObj.content.length > 140) {
       res.locals.globalError = 'Your tweet can not be longer than 140 characters!'
@@ -29,7 +30,8 @@ module.exports = {
     Tweet
       .create({
         content: tweetObj.content,
-        author: userId
+        author: userId,
+        authorUsername: username
       })
       .then((tweet) => {
         User
