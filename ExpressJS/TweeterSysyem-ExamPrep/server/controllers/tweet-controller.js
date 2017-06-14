@@ -76,6 +76,9 @@ module.exports = {
         res.locals.globalError = message
         res.render('tweets/add')
       })
+      .catch(() => {
+        res.send('No such tag')
+      })
   }
 }
 
