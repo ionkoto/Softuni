@@ -37,19 +37,23 @@ module.exports = {
         User
           .findByIdAndUpdate(userId, { $push: { 'tweets': tweet } }, { new: true })
           .then((user) => {
-            let createdPromises = tagsUnique.map((t) => {
-              return Tag.findOneAndUpdate({ name: t.substr(1).toLowerCase() }, { $push: { 'tweets': tweet } }, { upsert: true, new: true })
-            })
-            Promise
-              .all(createdPromises)
-              .then(() => {
-                res.redirect('/')
+            if (tagsUnique) {
+              let createdPromises = tagsUnique.map((t) => {
+                return Tag.findOneAndUpdate({ name: t.substr(1).toLowerCase() }, { $push: { 'tweets': tweet } }, { upsert: true, new: true })
               })
-              .catch(err => {
-                let message = errorHandler.handleMongooseError(err)
-                res.locals.globalError = message
-                res.render('tweets/add')
-              })
+              Promise
+                .all(createdPromises)
+                .then(() => {
+                  res.redirect('/')
+                })
+                .catch(err => {
+                  let message = errorHandler.handleMongooseError(err)
+                  res.locals.globalError = message
+                  res.render('tweets/add')
+                })
+            } else {
+              res.redirect('/')
+            }
           })
           .catch(err => {
             let message = errorHandler.handleMongooseError(err)
@@ -81,6 +85,80 @@ module.exports = {
       .catch(() => {
         res.send('No such tag')
       })
+  },
+  editGet: (req, res) => {
+    let tweetId = req.params.id
+    Tweet
+      .findById(tweetId)
+      .then((tweet) => {
+        tweet.content = tweet.content.replace(/(<a href="\/tag\/[\w]+">)|(<\/a>)/ig, '')
+        res.render('tweets/edit', { content: tweet.content, author: tweet.authorUsername, id: tweet._id })
+      })
+  },
+  editPost: (req, res) => {
+    let tweetObj = req.body
+    let tweetId = req.params.id
+    if (tweetObj.content.length > 140) {
+      res.locals.globalError = 'The tweet can not be longer than 140 characters!'
+      res.render('tweets/edit', { content: tweetObj.content, author: tweetObj.authorUsername, id: tweetObj._id })
+      return
+    }
+
+    tweetObj.content = addHyperlinks(tweetObj)
+    Tweet
+      .findByIdAndUpdate(tweetId, { content: tweetObj.content })
+      .then(() => {
+        res.redirect('/')
+      })
+      .catch(err => {
+        let message = errorHandler.handleMongooseError(err)
+        res.locals.globalError = message
+        res.render('tweets/edit', { content: tweetObj.content, author: tweetObj.authorUsername, id: tweetObj._id })
+      })
+  },
+  deleteGet: (req, res) => {
+    let tweetId = req.params.id
+    Tweet
+      .findById(tweetId)
+      .then((tweet) => {
+        tweet.content = tweet.content.replace(/(<a href="\/tag\/[\w]+">)|(<\/a>)/ig, '')
+        res.render('tweets/delete', { content: tweet.content, author: tweet.authorUsername, id: tweet._id })
+      })
+  },
+  deletePost: (req, res) => {
+    let tweetId = req.params.id
+    Tweet
+      .findByIdAndRemove(tweetId)
+      .then((tweet) => {
+        let userId = tweet.author
+        User
+          .findByIdAndUpdate(userId, { $pull: { 'tweets': tweet._id } })
+          .then(() => {
+            Tag
+              .find({ tweets: { $in: [tweetId] } })
+              .then((tags) => {
+                let createdPromises = tags.map((t) => {
+                  return Tag.findOneAndUpdate({ _id: t._id }, { $pull: { 'tweets': tweetId } })
+                })
+                Promise
+                  .all(createdPromises)
+                  .then(() => {
+                    res.redirect('/')
+                  })
+                  .catch(err => {
+                    let message = errorHandler.handleMongooseError(err)
+                    res.locals.globalError = message
+                    res.redirect('/')
+                  })
+              })
+          })
+        res.redirect('/')
+      })
+      .catch(err => {
+        let message = errorHandler.handleMongooseError(err)
+        res.locals.globalError = message
+        res.redirect('/')
+      })
   }
 }
 
@@ -88,4 +166,10 @@ function parseTags (content) {
   let pattern = /#(\w+\b)(?!.*\1\b)/gi   // filter unique tags
   let tags = content.match(pattern)
   return tags
+}
+
+function addHyperlinks (tweetObj) {
+  return tweetObj.content.replace(/(#[a-z0-9][a-z0-9\-_]*)/ig, function (x) {
+    return `<a href="/tag/${x.substr(1).toLowerCase()}">${x}</a>`
+  })
 }

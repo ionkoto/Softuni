@@ -1,0 +1,8 @@
+<div class="form-container">
+    <h2 class="centered">Author: {{this.author}}</h2>
+    <form action="/tweet/{{this.id}}/edit" method="POST">
+        <textarea name="content" rows="10">{{this.content}}</textarea>
+        <br />
+        <input type="submit" value="Save" />
+    </form>
+</div>
