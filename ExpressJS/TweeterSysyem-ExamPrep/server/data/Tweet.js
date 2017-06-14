@@ -6,8 +6,7 @@ const REQUIRED_VALIDATION_MESSAGE = '{PATH} is required'
 let tweetSchema = new mongoose.Schema({
   content: { type: String, required: REQUIRED_VALIDATION_MESSAGE },
   author: { type: ObjectId, required: REQUIRED_VALIDATION_MESSAGE, ref: 'User' },
-  creationDate: { type: Date, default: Date.now() },
-  tags: [{ type: ObjectId, ref: 'Tag' }]
+  creationDate: { type: Date, default: Date.now() }
 })
 
 let Tweet = mongoose.model('Tweet', tweetSchema)

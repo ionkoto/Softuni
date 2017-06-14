@@ -1,0 +1,7 @@
+<h1 class="centered">Latest 100 tweets containing the tag #{{tag}}</h1>
+{{#each tweets}}
+    <div class="single-post">
+        <h4>Posted by: {{author.username}} on {{creationDate}}</h4>
+        <p class="align-left" >{{{content}}}</p>
+    </div>
+{{/each}}

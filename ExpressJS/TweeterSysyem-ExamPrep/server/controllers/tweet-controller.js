@@ -1,4 +1,6 @@
 const Tweet = require('../data/Tweet')
+const Tag = require('../data/Tag')
+const User = require('../data/User')
 const errorHandler = require('../utilities/error-handler')
 
 module.exports = {
@@ -15,7 +17,14 @@ module.exports = {
       return
     }
 
-    let tagsArr = parseTags(tweetObj.content)
+    let tagsUnique = parseTags(tweetObj.content)
+
+    tweetObj.content = tweetObj.content.replace(/(#[a-z0-9][a-z0-9\-_]*)/ig, function (x) {
+      return `<a href="/tag/${x.substr(1).toLowerCase()}">${x}</a>`
+    })
+    tweetObj.content = tweetObj.content.replace(/(@[a-z0-9][a-z0-9\-_]*)/ig, function (x) {
+      return `<a href="/profile/${x.substr(1)}">${x}</a>`
+    })
 
     Tweet
       .create({
@@ -23,7 +32,44 @@ module.exports = {
         author: userId
       })
       .then((tweet) => {
-        res.redirect('/')
+        User
+          .findByIdAndUpdate(userId, { $push: { 'tweets': tweet } }, { new: true })
+          .then((user) => {
+            let createdPromises = tagsUnique.map((t) => {
+              return Tag.findOneAndUpdate({ name: t.substr(1).toLowerCase() }, { $push: { 'tweets': tweet } }, { upsert: true, new: true })
+            })
+            Promise
+              .all(createdPromises)
+              .then(() => {
+                res.redirect('/')
+              })
+              .catch(err => {
+                let message = errorHandler.handleMongooseError(err)
+                res.locals.globalError = message
+                res.render('tweets/add')
+              })
+          })
+          .catch(err => {
+            let message = errorHandler.handleMongooseError(err)
+            res.locals.globalError = message
+            res.render('tweets/add')
+          })
+      })
+      .catch(err => {
+        let message = errorHandler.handleMongooseError(err)
+        res.locals.globalError = message
+        res.render('tweets/add')
+      })
+  },
+  getByTag: (req, res) => {
+    let tagName = req.params.tagName
+
+    Tag
+      .findOne({ name: tagName })
+      .populate('tweets')
+      .then((tag) => {
+        let tweets = tag.tweets.sort((t) => t.creationDate).slice(0, 100)  // sort By date and limit to 100
+        res.render('tweets/byTag', { tweets: tweets, tag: tagName })
       })
       .catch(err => {
         let message = errorHandler.handleMongooseError(err)
@@ -34,7 +80,7 @@ module.exports = {
 }
 
 function parseTags (content) {
-  let pattern = /[#][\w]+/g
+  let pattern = /#(\w+\b)(?!.*\1\b)/gi   // filter unique tags
   let tags = content.match(pattern)
   return tags
 }
